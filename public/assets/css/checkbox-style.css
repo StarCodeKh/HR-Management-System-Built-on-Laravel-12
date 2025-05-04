@@ -1,0 +1,96 @@
+/* Customize Check Box */
+.option-input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    -o-appearance: none;
+    appearance: none;
+    position: relative;
+    top: 3px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    transition: all 0.15s ease-out 0s;
+    background: #E9ECEF;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    margin-right: 0.5rem;
+    outline: none;
+    position: relative;
+    z-index: 1000;
+}
+
+.option-input:hover {
+    background: #E9ECEF;
+}
+
+.option-input:checked {
+    background: green; /* Default checked color */
+}
+
+.option-input:checked#red {
+    background: red; /* Red color when checkbox is checked and has the 'red' class */
+}
+
+.option-input:checked::before {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    content: '\f00c';
+    font-size: 15px;
+    font-weight: bold;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Font Awesome 5 Free';
+}
+
+.option-input:checked::after {
+    -webkit-animation: click-wave 0.65s;
+    -moz-animation: click-wave 0.65s;
+    animation: click-wave 0.65s;
+    background: green; /* Default wave color */
+    content: '';
+    display: block;
+    position: relative;
+    z-index: 100;
+}
+.option-input:checked#red::after {
+    -webkit-animation: click-wave 0.65s;
+    -moz-animation: click-wave 0.65s;
+    animation: click-wave 0.65s;
+    background: red; /* Default wave color */
+    content: '';
+    display: block;
+    position: relative;
+    z-index: 100;
+}
+
+.option-input.checkbox {
+    border-radius: 0%;
+}
+
+.option-input.checkbox::after {
+    border-radius: 0%;
+}
+
+@keyframes click-wave {
+    0% {
+        height: 20px;
+        width: 20px;
+        opacity: 0.35;
+        position: relative;
+    }
+    100% {
+        height: 150px;
+        width: 150px;
+        margin-left: -60px;
+        margin-top: -60px;
+        opacity: 0;
+    }
+}
+/* End Customize Check Box radio */
