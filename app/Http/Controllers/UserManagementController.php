@@ -327,69 +327,57 @@ class UserManagementController extends Controller
     public function update(Request $request)
     {
         DB::beginTransaction();
-        try {
-            $user_id   = $request->user_id;
-            $name      = $request->name;
-            $email     = $request->email;
-            $role_name = $request->role_name;
-            $position  = $request->position;
-            $phone     = $request->phone;
-            $department= $request->department;
-            $status    = $request->status;
-            $image_name = $request->hidden_image;
     
-            $dt = Carbon::now();
-            $todayDate = $dt->toDayDateTimeString();
+        try {
+            $user_id    = $request->user_id;
+            $image_name = $request->hidden_image;
     
             $image = $request->file('images');
             if ($image) {
-                // Delete old image if not the default one
-                if ($image_name && $image_name != 'photo_defaults.jpg') {
-                    // Delete the old image if it exists
-                    unlink('assets/images/'.$image_name);
+                // Delete old image if it's not the default
+                if ($image_name && $image_name !== 'photo_defaults.jpg') {
+                    $oldImagePath = public_path('assets/images/' . $image_name);
+                    if (file_exists($oldImagePath)) {
+                        unlink($oldImagePath);
+                    }
                 }
     
+                // Store new image
                 $image_name = time() . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path('assets/images'), $image_name);
             }
     
+            // Update user data
             $update = [
-                'user_id'       => $user_id,
-                'name'          => $name,
-                'role_name'     => $role_name,
-                'email'         => $email,
-                'position'      => $position,
-                'phone_number'  => $phone,
-                'department'    => $department,
-                'status'        => $status,
-                'avatar'        => $image_name,
+                'name'         => $request->name,
+                'email'        => $request->email,
+                'role_name'    => $request->role_name,
+                'position'     => $request->position,
+                'phone_number' => $request->phone,
+                'department'   => $request->department,
+                'status'       => $request->status,
+                'avatar'       => $image_name,
             ];
     
-            $activityLog = [
-                'user_name'    => $name,
-                'email'        => $email,
-                'phone_number' => $phone,
-                'status'       => $status,
-                'role_name'    => $role_name,
-                'modify_user'  => 'Update',
-                'date_time'    => $todayDate,
-            ];
-    
-            DB::table('user_activity_logs')->insert($activityLog);
             User::where('user_id', $user_id)->update($update);
     
             DB::commit();
     
             flash()->success('User updated successfully :)');
             return redirect()->route('userManagement');
+    
         } catch (\Exception $e) {
-            DB::rollback();
-            \Log::error('User update failed', ['error' => $e->getMessage()]);
-            flash()->success('User update failed :)');
+            DB::rollBack();
+            \Log::error('User update failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+    
+            flash()->error('User update failed :)');
             return redirect()->back()->withInput();
         }
     }
-
+    
     /** Delete Record */
     public function delete(Request $request)
     {
