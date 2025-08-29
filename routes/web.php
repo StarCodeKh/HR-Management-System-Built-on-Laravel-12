@@ -323,10 +323,17 @@ Route::group(['namespace' => 'App\Http\Controllers'],function()
         });
     });
 
-     // ---------------------- Chat -----------------------//
-     Route::controller(ChatController::class)->group(function () {
+    // ---------------------- Chat -----------------------//
+    Route::controller(ChatController::class)->group(function () {
         Route::middleware('auth')->group(function () {
             Route::get('chat', 'chat')->name('chat');
+        });
+    });
+
+    // ---------------------- Asset -----------------------//
+    Route::controller(AssetsController::class)->group(function () {
+        Route::middleware('auth')->group(function () {
+            Route::get('assets/page', 'index')->name('assets/page');
         });
     });
 });
